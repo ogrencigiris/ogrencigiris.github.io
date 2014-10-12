@@ -12,7 +12,7 @@ class Service extends phpQuery
 	public $ogrno="135035008";
 	public $pass="07111994";
 	
-	/*public function __construct()
+	public function __construct()
 	{
 		if(isset($_SESSION["ogrno"]) && isset($_SESSION["pass"]))
 		{
@@ -24,7 +24,7 @@ class Service extends phpQuery
 		$page=phpQuery::newDocument($content);
 		pq("frameset")->empty();
 		$this->return=pq("frameset");
-	}*/
+	}
 	public function duyurular($url="sag.asp")
 	{
 		$this::addPage($url);
@@ -32,7 +32,7 @@ class Service extends phpQuery
 	public function notlar($url="not.asp")
 	{
 		$this::addPage($url);
-		echo $this->return;
+		//echo $this->return;
 	}
 	public function sonYilNotlari($url="nots.asp")
 	{
@@ -97,7 +97,7 @@ class Service extends phpQuery
 
 }
 $saas=new Service();
-$saas->sinifListesi();
+$saas->notlar();
 //$saas->notlar();
 //$saas->sonYilNotlari();
 /*echo $saas->duyurular();*/
