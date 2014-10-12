@@ -20,10 +20,8 @@ class Service extends phpQuery
 			$this->pass=$_SESSION["pass"];
 			
 		}
-		$content=$this::cURL();
-		$page=phpQuery::newDocument($content);
-		pq("frameset")->empty();
-		$this->return=pq("frameset");
+		$content=$this->cURL();
+		$this->return=phpQuery::newDocument($content);
 	}
 	public function duyurular($url="sag.asp")
 	{
@@ -31,13 +29,7 @@ class Service extends phpQuery
 	}
 	public function notlar($url="not.asp")
 	{
-		//$this::addPage($url);
-		//echo $this->return;
-		echo $this->cURL($url,array(
-			"ogrno"=>$this->ogrno,
-			"pass"=>$this->pass,
-			//"login"=>"Not Durumu"
-		));
+		$this::addPage($url);
 	}
 	public function sonYilNotlari($url="nots.asp")
 	{
@@ -55,10 +47,10 @@ class Service extends phpQuery
 			"dersno"=>$dersno,
 			"dersadi"=>$dersadi));
 	}
-	private function addPage($page,$fields=array())
+	private function addPage($page)
 	{
-		//pq($this->return)->append("<frame src='".$this->base_domain."$page'></frame>");
-		$this->return=$this->cURL($page,$fields);
+		pq($this->return)->append("<frame src='".$this->base_domain.$page."'></frame>");
+		//$this->return=$this->cURL($page,$fields);
 	}
 	public function cURL($url="duyuru.asp",$post_fields=array())
 	{
@@ -83,7 +75,7 @@ class Service extends phpQuery
 			CURLOPT_POSTFIELDS=>http_build_query($post_fields),
 			CURLOPT_POST=>true,
 			CURLOPT_COOKIEFILE=>"/",
-			CURLOPT_COOKIEJAR>"/",
+			CURLOPT_COOKIEJAR=>"/",
 			CURLOPT_COOKIE=>http_build_query(array(
 				"ogrno"=>$this->ogrno,
 				"pass" =>$this->pass
@@ -102,8 +94,8 @@ class Service extends phpQuery
 
 }
 $saas=new Service();
-$saas->sinifListesi();
+//$saas->sinifListesi();
 $saas->notlar();
 //$saas->sonYilNotlari();
-/*echo $saas->duyurular();*/
+//$saas->duyurular();
  
