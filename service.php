@@ -31,8 +31,13 @@ class Service extends phpQuery
 	}
 	public function notlar($url="not.asp")
 	{
-		$this::addPage($url);
+		//$this::addPage($url);
 		//echo $this->return;
+		echo $this->cURL($url,array(
+			"ogrno"=>$this->ogrno,
+			"pass"=>$this->pass,
+			//"login"=>"Not Durumu"
+		));
 	}
 	public function sonYilNotlari($url="nots.asp")
 	{
@@ -50,7 +55,7 @@ class Service extends phpQuery
 			"dersno"=>$dersno,
 			"dersadi"=>$dersadi));
 	}
-	private function addPage($page,$fields)
+	private function addPage($page,$fields=array())
 	{
 		//pq($this->return)->append("<frame src='".$this->base_domain."$page'></frame>");
 		$this->return=$this->cURL($page,$fields);
@@ -63,7 +68,7 @@ class Service extends phpQuery
 				"islem"=>"giris_yap"
 		):$post_fields;
 		$ch = curl_init($this->base_domain.$url);
-		echo http_build_query($post_fields);
+		echo http_build_query($post_fields)."\n<br>";
 		curl_setopt_array( $ch,array(
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_HEADER => false,
@@ -97,8 +102,8 @@ class Service extends phpQuery
 
 }
 $saas=new Service();
+$saas->sinifListesi();
 $saas->notlar();
-//$saas->notlar();
 //$saas->sonYilNotlari();
 /*echo $saas->duyurular();*/
  
