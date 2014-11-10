@@ -1,9 +1,14 @@
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 </head>
-<form method="POST" action="kutuphane.php" >
+<form method="POST" action="" >
 <input type="text" name="kIsim" />
-<input type="hidden" name="islem" value="search" />
+<select name="islem">
+	<option value="search" >Arama</option>
+	<option value="bookName">Kitap Detayı</option>
+	<option value="katalogTara">Katalog Tara</option>
+</select>
+
 <input type="submit"  />
 </form>
 <?php
@@ -82,6 +87,14 @@ if($_REQUEST)
 			echo "</table>";
 		break;
 		case 'katalogTara':
+			require_once("phpQuery-onefile.php");
+			phpQuery::newDocument($xml);
+			$rows= pq('tr[bgcolor=White]');
+			foreach($rows as $row)
+			{
+				echo pq($row)->find("a")->text()."<br>";
+				echo pq($row)->children("td")->filter(":eq(1)")->text()."<br>";
+			}
 			echo $xml;
 		break;
 	}
