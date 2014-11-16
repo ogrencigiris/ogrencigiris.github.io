@@ -5,31 +5,73 @@
 * Templating angular ile halledilecek..belki...
 */
 include "phpQuery-onefile.php";
+
 class Service extends phpQuery
 {
 	public $base_domain="https://asp2.selcuk.edu.tr/asp/ogr/";
-	public $return="";
+	public $opt_header=true;
+	public $login=false;
+	public $return=array();
+	public $cookies=array();
 	public $ogrno="135035008";
-	public $pass="07111994";
+	public $pass="degistirdim";
+	
 	
 	public function __construct()
 	{
-		if(isset($_SESSION["ogrno"]) && isset($_SESSION["pass"]))
+		/*if(isset($_SESSION["ogrno"]) && isset($_SESSION["pass"]))
 		{
 			$this->ogrno=$_SESSION["ogrno"];
 			$this->pass=$_SESSION["pass"];
-			
+		}*/
+		//echo pq("table:eq(1)");
+		$content=$this::cURL();
+		preg_match('/^Set-Cookie:\s*([^;]*)/mi', $content, $m);
+		if(isset($m[1]))
+		{
+			parse_str($m[1], $this->cookies);
 		}
-		$content=$this->cURL();
-		$this->return=phpQuery::newDocument($content);
 	}
-	public function duyurular($url="sag.asp")
+	public function profile($url="sag.asp")
 	{
 		$this::addPage($url);
+		$each=pq("table:eq(1) tr");
+		$profileDetail=[];
+		foreach($each as $row)
+		{
+			$profileDetail[$this->clean(pq($row)->find("td:first")->text())]=$this->clean(pq($row)->find("td:last")->text());
+		}
+		$this->return=$profileDetail;	
+	}
+	function clean($string)
+	{
+		$order=array(":","\n","\r","\u00a0");
+		$replace="";
+		return trim(str_replace($order,$replace,$string));
 	}
 	public function notlar($url="not.asp")
 	{
-		$this::addPage($url);
+		$this::addPage($url,array("login"=>"Not Durumu"));
+		$this->return=preg_replace(
+		array("/<\/tr>/","/<\/center>/","/<center>/","/<tr>/"   ,"/<\/table>/"),
+		array(""        ,""            ,""         ,"</tr><tr>","</tr></table>"),$this->return);
+		pq("font")->remove();
+		pq("b")->remove();
+		/*$donemler=pq("center table td[colspan='17'][bgcolor='#F6D6C9'][align='center']:not(:last)");
+		foreach($donemler as $donem)
+		{
+			$arr[]["Dönem"]= pq($donem)->text();;
+		}
+		$this->return=$arr;*/
+		$basliklar=pq('tr[height="20"][bgcolor="#D9FFEE"][face="verdana,tahoma,arial"]');
+		foreach($basliklar as $baslik)
+		{
+			//echo pq($baslik)->html();
+			//$arr2[pq($baslik)->text()]="";
+		}
+		//$this->return=$arr2;
+		
+		//$dersler=pq("td")
 	}
 	public function sonYilNotlari($url="nots.asp")
 	{
@@ -47,24 +89,20 @@ class Service extends phpQuery
 			"dersno"=>$dersno,
 			"dersadi"=>$dersadi));
 	}
-	private function addPage($page)
+	private function addPage($page="sag.asp",$fields=[])
 	{
-		pq($this->return)->append("<frame src='".$this->base_domain.$page."'></frame>");
-		//$this->return=$this->cURL($page,$fields);
+		$this->return=phpQuery::newDocument($this::cURL($page));
 	}
 	public function cURL($url="duyuru.asp",$post_fields=array())
 	{
 		$post_fields=empty($post_fields)?array(
 				"ogrno"=>$this->ogrno,
-				"pass" =>$this->pass,
-				"islem"=>"giris_yap"
+				"pass" =>$this->pass
 		):$post_fields;
 		$ch = curl_init($this->base_domain.$url);
-		echo http_build_query($post_fields)."\n<br>";
-		curl_setopt_array( $ch,array(
+		curl_setopt_array( $ch,array(			
 			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_HEADER => false,
-			CURLOPT_ENCODING => "",
+			CURLOPT_HEADER => true,
 			CURLOPT_AUTOREFERER => true,
 			CURLOPT_CONNECTTIMEOUT => 30,
 			CURLOPT_TIMEOUT => 30,
@@ -75,27 +113,46 @@ class Service extends phpQuery
 			CURLOPT_POSTFIELDS=>http_build_query($post_fields),
 			CURLOPT_POST=>true,
 			CURLOPT_COOKIEFILE=>"/",
-			CURLOPT_COOKIEJAR=>"/",
-			CURLOPT_COOKIE=>http_build_query(array(
-				"ogrno"=>$this->ogrno,
-				"pass" =>$this->pass
-			))
+			CURLOPT_COOKIEJAR>"/",
+			CURLOPT_COOKIE=>http_build_query($this->cookies)
 		));
 		$content = curl_exec( $ch );
 		curl_close( $ch );
-		return $content;
-		
+		return $content;		
 	}
 	public function __destruct()
 	{
-		echo $this->return;
+		if(is_array($this->return))
+		{
+			header('Content-Type: application/json;');
+			echo json_encode($this->return,JSON_PRETTY_PRINT);
+		}
+		else 
+		{
+			echo $this->return;
+		}
 	}
 
 
 }
 $saas=new Service();
+//$saas->profile();
 //$saas->sinifListesi();
 $saas->notlar();
 //$saas->sonYilNotlari();
-//$saas->duyurular();
- 
+/* Old curl_opt
+	CURLOPT_RETURNTRANSFER => true,
+	CURLOPT_HEADER => true,
+	//CURLOPT_ENCODING => "",
+	//CURLOPT_AUTOREFERER => true,
+	//CURLOPT_CONNECTTIMEOUT => 30,
+	CURLOPT_TIMEOUT => 30,
+	//CURLOPT_MAXREDIRS => 10,
+	CURLOPT_SSL_VERIFYPEER => false,
+	CURLOPT_SSL_VERIFYHOST =>false,
+	CURLOPT_FOLLOWLOCATION => 1,
+	CURLOPT_POSTFIELDS=>http_build_query($post_fields),
+	CURLOPT_POST=>true,
+	CURLOPT_COOKIEFILE=>"/",
+	CURLOPT_COOKIEJAR>"/",
+	CURLOPT_COOKIE=>http_build_query($this->cookies)*/
