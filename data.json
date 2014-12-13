@@ -1,7 +1,7 @@
 {
   "2013-2014 GÜZ YARIYILI":
     {
-    "Basliklar":[""Ders Kodu","Yıl","Ders Adı","Kredi","Katsayı","Muaf","AraSınav1","AraSınav2",	"Genel Sınav","Bütünleme","Tekders","Harf","Durum"]
+    "Basliklar":["Ders Kodu","Yıl","Ders Adı","Kredi","Katsayı","Muaf","AraSınav1","AraSınav2",	"Genel Sınav","Bütünleme","Tekders","Harf","Durum"]
     "Satirlar":{
       ["5035101","2014","Matematik","5","3","&nbsp","65","&nbsp","75","&nbsp","&nbsp","BB","2"],
       ["5035103","2014","Programlama Temelleri","4","4","&nbsp","80","&nbsp","100","&nbsp","&nbsp","AA","2"],
