@@ -52,26 +52,26 @@ class Service extends phpQuery
 	public function notlar($url="not.asp")
 	{
 		$this::addPage($url,array("login"=>"Not Durumu"));
+		pq("p:first,table:first,br,font[color='black'],tr>b")->remove();
 		$this->return=preg_replace(
-		array("/<\/tr>/","/<\/center>/","/<center>/","/<tr>/"   ,"/<\/table>/"),
-		array(""        ,""            ,""         ,"</tr><tr>","</tr></table>"),$this->return);
-		pq("font")->remove();
-		pq("b")->remove();
-		/*$donemler=pq("center table td[colspan='17'][bgcolor='#F6D6C9'][align='center']:not(:last)");
-		foreach($donemler as $donem)
-		{
-			$arr[]["Dönem"]= pq($donem)->text();;
-		}
-		$this->return=$arr;*/
-		$basliklar=pq('tr[height="20"][bgcolor="#D9FFEE"][face="verdana,tahoma,arial"]');
+		array("/<\/tr>/","/<\/center>/","/<center>/","/<tr/"   ,"/<\/table>/","/<table(.*)><\/tr>/"),
+		array(""        ,""            ,""         ,"</tr>\n<tr","</tr></table>","<table>"),$this->return);
+		$basliklar=pq('tr[bgcolor="#931515"]:first td');
 		foreach($basliklar as $baslik)
 		{
-			//echo pq($baslik)->html();
-			//$arr2[pq($baslik)->text()]="";
+			$titles[]=pq($baslik)->text();
 		}
-		//$this->return=$arr2;
-		
-		//$dersler=pq("td")
+		print_r($titles);
+		$kayitlar=pq('tr[bgcolor="#D9FFEE"]');
+		$print=[];
+		//print_r($basliklar);
+		/*foreach($kayitlar as $index=>$kayit)
+		{
+			$print[pq($basliklar[$index])->text()]=pq($kayit)->text();
+		}*/
+		//$this->return=$print;
+		//print_r($arr2);
+		//$dersler=pq("td");
 	}
 	public function sonYilNotlari($url="nots.asp")
 	{
