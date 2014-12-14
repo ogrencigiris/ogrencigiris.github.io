@@ -39,7 +39,7 @@ class Service extends phpQuery
 		$profileDetail=[];
 		foreach($each as $row)
 		{
-			$profileDetail[$this->clean(pq($row)->find("td:first")->text())]=$this->clean(pq($row)->find("td:last")->text());
+			$profileDetail[pq($row)->find("td:first")->text()]=pq($row)->find("td:last")->text();
 		}
 		$this->return=$profileDetail;	
 	}
@@ -54,24 +54,30 @@ class Service extends phpQuery
 		$this::addPage($url,array("login"=>"Not Durumu"));
 		pq("p:first,table:first,br,font[color='black'],tr>b")->remove();
 		$this->return=preg_replace(
-		array("/<\/tr>/","/<\/center>/","/<center>/","/<tr/"   ,"/<\/table>/","/<table(.*)><\/tr>/"),
-		array(""        ,""            ,""         ,"</tr>\n<tr","</tr></table>","<table>"),$this->return);
-		$basliklar=pq('tr[bgcolor="#931515"]:first td');
+		array("/<\/tr>/","/<\/center>/","/<center>/","/<tr/"   ,"/<\/table>/","/<table(.*)>\n<\/tr>/","/&amp;nbsp/"),
+		array(""        ,""            ,""         ,"</tr>\n<tr","</tr></table>","<table$1>",""),$this->return);
+		phpQuery::newDocument($this->return);
+		$donemler=pq("td[bgcolor='#F6D6C9']");
+		foreach($donemler as $donem)
+		{
+			$donemdizi[]=$this->clean(pq($donem)->text());
+		}
+		$basliklar=pq('tr[bgcolor="#931515"]:eq(1) td');
 		foreach($basliklar as $baslik)
 		{
-			$titles[]=pq($baslik)->text();
+			$titles[]=$this->clean(pq($baslik)->text());
 		}
-		print_r($titles);
 		$kayitlar=pq('tr[bgcolor="#D9FFEE"]');
 		$print=[];
-		//print_r($basliklar);
-		/*foreach($kayitlar as $index=>$kayit)
+		foreach($kayitlar as $i=>$kayit)
 		{
-			$print[pq($basliklar[$index])->text()]=pq($kayit)->text();
-		}*/
-		//$this->return=$print;
-		//print_r($arr2);
-		//$dersler=pq("td");
+			foreach(pq($kayit)->find("td") as $index=>$kolon)
+			{
+				
+				$print[$i][$titles[$index]]=pq($kolon)->text();
+			}
+		}
+		$this->return=$print;
 	}
 	public function sonYilNotlari($url="nots.asp")
 	{
@@ -124,7 +130,7 @@ class Service extends phpQuery
 	{
 		if(is_array($this->return))
 		{
-			header('Content-Type: application/json;');
+			header('Content-Type: application/json;charset=utf-8');
 			echo json_encode($this->return,JSON_PRETTY_PRINT);
 		}
 		else 
