@@ -39,6 +39,18 @@ function apiTip($tip,$search)
 		break;
 	}
 }
+/*#-#-#-#-#-#-#-#-#-# COOKİE #-#-#-#-#-#-#-#-#-#
+
+$content=cUrll("katalogTara",false,"");
+preg_match('/^Set-Cookie:\s*([^;]*)/mi', $content, $m);
+print_r($m);
+if(isset($m[1]))
+{
+	parse_str($m[1], $content);
+	
+}
+
+#-#-#-#-#-#-#-#-#-# COOKİE #-#-#-#-#-#-#-#-#-#*/
 function cUrll($tip=NULL,$req=true,$search)
 {
 	$gonderi["TextBox1"]=urlencode($search);
@@ -65,7 +77,6 @@ function cUrll($tip=NULL,$req=true,$search)
 }
 if($_REQUEST)
 { 
-	
 	$xml=cUrll($_REQUEST["islem"],true,$_REQUEST["kIsim"]);
 	switch($_REQUEST["islem"])
 	{
@@ -150,21 +161,35 @@ if($_REQUEST)
 				"yayinYeri"=>"Yayın Yeri",
 				"diziAdi"=>"Dizi Adı",
 				"konu"=>"Konu",
-				"odunc"=>"Ödünç Verilebilir"
+				);
+			$kitapDurumlari=array(
+				"yerNo",
+				"bulunduguYer",
+				"yil",
+				"cilt",
+				"kopya",
+				"iadeTarihi"
 				);
 			foreach($istenenler as $idx=>$istenen)
 			{
 				$selcukDetay[$idx]=pq('td:contains('.$istenen.') + td')->text();
 			}
-			echo pq('td:contains("Ödünç") + td')->text()."--";
-			//$isbn= pq('td:contains(ISBN) + td')->text();
+			$kitapAdetler=pq("#Table3 tr:not(:first)");
+			$kitapOzellikler=[];
+			foreach($kitapAdetler as $idx=>$kitapAdet)
+			{
+				foreach(pq($kitapAdet)->find("td") as $idx2=>$td)
+				{
+					$kitapOzellikler[$idx][$kitapDurumlari[$idx2]]=pq($td)->text();
+				}
+			}
 			$goodReadsDetay=cUrll("bookName",true,$selcukDetay["isbn"]);
 			$goodReadsDetay=new SimpleXMLElement($goodReadsDetay);
 			echo "<table>";
 				echo "
 					<tr>
-						<td>Ödünç:</td>
-						<td>".$selcukDetay["odunc"] ."</td>
+						<td>Yayın Yeri:</td>
+						<td>".$selcukDetay["yayinYeri"] ."</td>
 					</tr>
 					<tr>
 						<td>Kitap Adı:</td>
@@ -199,6 +224,29 @@ if($_REQUEST)
 						<td>".$goodReadsDetay->book->description ."</td>
 					</tr>
 				";
+			echo "</table>";
+			echo "<table cellpadding='10' cellspacing='10' border='2'>
+					<tr>
+						<th>yerNo</th>
+						<th>bulunduguYer</th>
+						<th>yil</th>
+						<th>cilt</th>
+						<th>kopya</th>
+						<th>iadeTarihi</th>
+					</tr>
+				";
+				foreach($kitapOzellikler as $idx=>$kitapOzellik)
+				{
+					echo "<tr>
+							<td>".$kitapOzellik["yerNo"]."</td>
+							<td>".$kitapOzellik["bulunduguYer"]."</td>
+							<td>".$kitapOzellik["yil"]."</td>
+							<td>".$kitapOzellik["cilt"]."</td>
+							<td>".$kitapOzellik["kopya"]."</td>
+							<td>".$kitapOzellik["iadeTarihi"]."</td>
+						</tr>
+						";
+				}
 			echo "</table>";
 		break;
 	}
