@@ -39,7 +39,10 @@ class Service extends phpQuery
 		$profileDetail=[];
 		foreach($each as $row)
 		{
-			$profileDetail[pq($row)->find("td:first")->text()]=pq($row)->find("td:last")->text();
+			if(!empty(pq($row)->find("td:first")->text()))
+			{
+			$profileDetail[$this->clean(pq($row)->find("td:first")->text())]=$this->clean(pq($row)->find("td:last")->text());
+			}
 		}
 		$this->return=$profileDetail;	
 	}
