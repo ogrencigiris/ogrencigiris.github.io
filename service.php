@@ -90,6 +90,26 @@ class Service extends phpQuery
 	public function sonYilNotlari($url="nots.asp")
 	{
 		$this::addPage($url,"");
+		pq("table:first,p:first,br,font[color='black'],tr>b")->remove();
+		$this->return=preg_replace(
+		array("/<\/tr>/","/<\/center>/","/<center>/","/<tr/"   ,"/<\/table>/","/<table(.*)>\n<\/tr>/","/&amp;nbsp/"),
+		array(""        ,""            ,""         ,"</tr>\n<tr","</tr></table>","<table$1>",""),$this->return);
+		phpQuery::newDocument($this->return);
+		$basliklar=pq('tr[bgcolor="#931515"]:eq(0) td');
+		foreach($basliklar as $baslik)
+		{
+			$titles[]=$this->clean(pq($baslik)->text());
+		}
+		$kayitlar=pq('tr[bgcolor="#D9FFEE"]');             //[bgcolor="#D9FFEE"]
+		$print=[];
+		foreach($kayitlar as $i=>$kayit)
+		{
+			foreach(pq($kayit)->find("td:not(:last)") as $index=>$kolon)
+			{
+				$print[$i][$titles[$index]]=pq($kolon)->text();
+			}
+		}
+		$this->return=$print;
 	}
 	public function sinifListesi($url="notsinif.asp",$notharf="1",$harftip="0",$bolum="1014",$yil="2014",$dersno="5035201",$dersadi="Mesleki Matematik")
 	{
@@ -138,8 +158,8 @@ class Service extends phpQuery
 	{
 		if(is_array($this->return))
 		{
-			//header('Content-Type: application/json;charset=utf-8');
-			//echo json_encode($this->return,JSON_PRETTY_PRINT);
+			header('Content-Type: application/json;charset=utf-8');
+			echo json_encode($this->return,JSON_PRETTY_PRINT);
 		}
 		else 
 		{
@@ -149,24 +169,12 @@ class Service extends phpQuery
 
 
 }
+if($_REQUEST)
+{
 $saas=new Service();
+call_user_func([$saas,$_REQUEST["process"]]);
+}
 //$saas->profile();
 //$saas->sinifListesi();
-$saas->notlar();
+//$saas->notlar();
 //$saas->sonYilNotlari();
-/* Old curl_opt
-	CURLOPT_RETURNTRANSFER => true,
-	CURLOPT_HEADER => true,
-	//CURLOPT_ENCODING => "",
-	//CURLOPT_AUTOREFERER => true,
-	//CURLOPT_CONNECTTIMEOUT => 30,
-	CURLOPT_TIMEOUT => 30,
-	//CURLOPT_MAXREDIRS => 10,
-	CURLOPT_SSL_VERIFYPEER => false,
-	CURLOPT_SSL_VERIFYHOST =>false,
-	CURLOPT_FOLLOWLOCATION => 1,
-	CURLOPT_POSTFIELDS=>http_build_query($post_fields),
-	CURLOPT_POST=>true,
-	CURLOPT_COOKIEFILE=>"/",
-	CURLOPT_COOKIEJAR>"/",
-	CURLOPT_COOKIE=>http_build_query($this->cookies)*/
