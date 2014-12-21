@@ -16,7 +16,6 @@ class Service extends phpQuery
 	public $ogrno="135035008";
 	public $pass="degistirdim";
 	
-	
 	public function __construct()
 	{
 		/*if(isset($_SESSION["ogrno"]) && isset($_SESSION["pass"]))
@@ -39,9 +38,9 @@ class Service extends phpQuery
 		$profileDetail=[];
 		foreach($each as $row)
 		{
-			if(!empty(pq($row)->find("td:first")->text()))
+			if(pq($row)->find("td:first")->text()!="")
 			{
-			$profileDetail[$this->clean(pq($row)->find("td:first")->text())]=$this->clean(pq($row)->find("td:last")->text());
+				$profileDetail[$this->clean(pq($row)->find("td:first")->text())]=$this->clean(pq($row)->find("td:last")->text());
 			}
 		}
 		$this->return=$profileDetail;	
@@ -60,7 +59,8 @@ class Service extends phpQuery
 		array("/<\/tr>/","/<\/center>/","/<center>/","/<tr/"   ,"/<\/table>/","/<table(.*)>\n<\/tr>/","/&amp;nbsp/"),
 		array(""        ,""            ,""         ,"</tr>\n<tr","</tr></table>","<table$1>",""),$this->return);
 		phpQuery::newDocument($this->return);
-		$donemler=pq("td[bgcolor='#F6D6C9']");
+		$donemler=pq("td[bgcolor='#F6D6C9']")->addClass("donem");
+		//print_r($donemler);
 		foreach($donemler as $donem)
 		{
 			$donemdizi[]=$this->clean(pq($donem)->text());
@@ -70,14 +70,18 @@ class Service extends phpQuery
 		{
 			$titles[]=$this->clean(pq($baslik)->text());
 		}
-		$kayitlar=pq('tr[bgcolor="#D9FFEE"]');
+		$kayitlar=pq('tr:not([bgcolor="#931515"])');             //[bgcolor="#D9FFEE"]
 		$print=[];
 		foreach($kayitlar as $i=>$kayit)
 		{
 			foreach(pq($kayit)->find("td") as $index=>$kolon)
 			{
+				if(pq($kolon)->is(".donem")){
+					$donem=pq($kolon)->text();
+					continue;
+				}
 				
-				$print[$i][$titles[$index]]=pq($kolon)->text();
+				$print[$donem][$i][$titles[$index]]=pq($kolon)->text();
 			}
 		}
 		$this->return=$print;
