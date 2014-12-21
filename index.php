@@ -1,9 +1,13 @@
 <?php
-	/*include "vendor/autoload.php";
+	include "vendor/autoload.php";
 	header('Content-Type: text/html; charset=utf-8');
 	$app = new \Slim\Slim();
-	$app->get('/giris', function () {
-		Service::profile();
+	$app->post('/kitapliklar', function () {
+		extract($_POST);
+		$data=["ogrenci_no"=>$_SESSION["ogr_no"],"kitaplik_adi"=>$kitaplikadi]
+		if(Medoo::has("kitapliktablosu",$data))
+		Medoo::insert("kitapliktablosu",$data);
 	});
-	$app->run();*/
+	
+	$app->run();
 ?>
