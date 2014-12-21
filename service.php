@@ -59,7 +59,7 @@ class Service extends phpQuery
 		array("/<\/tr>/","/<\/center>/","/<center>/","/<tr/"   ,"/<\/table>/","/<table(.*)>\n<\/tr>/","/&amp;nbsp/"),
 		array(""        ,""            ,""         ,"</tr>\n<tr","</tr></table>","<table$1>",""),$this->return);
 		phpQuery::newDocument($this->return);
-		$donemler=pq("td[bgcolor='#F6D6C9']")->addClass("donem");
+		$donemler=pq("td[bgcolor='#F6D6C9']  ")->addClass("donem");
 		//print_r($donemler);
 		foreach($donemler as $donem)
 		{
@@ -85,6 +85,7 @@ class Service extends phpQuery
 			}
 		}
 		$this->return=$print;
+		return $print;
 	}
 	public function sonYilNotlari($url="nots.asp")
 	{
