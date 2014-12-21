@@ -74,142 +74,128 @@
                     </div>
 					</div>
 					-->
+					<div class="box-header">
+						<h3 class="box-title">2013-2014 Güz Yarıyılı</h3>
+					</div><!-- /.box-header -->
+					<div class="box-body no-padding">
+						<table class="table table-striped">
+							<tr>
+								<th style="width:7%">Ders Kodu</th>
+								<th style="width:5%">Yıl</th>
+								<th>Ders Adı</th>
+								<th style="width:5%">Kredi</th>
+								<th style="width:5%">Katsayı</th>
+								<th style="width:5%">Muaf</th>
+								<th style="width:8%">Ara Sınav-1</th>
+								<th style="width:8%">Ara Sınav-2</th>
+								<th style="width:8%">Genel Sınav</th>
+								<th style="width:6%">Bütünleme</th>
+								<th style="width:7%">Tek Ders</th>
+								<th style="width:5%">Harf</th>
+								<th style="width:6%">Durum</th>
 
-
-
-
-                                <div class="box-header">
-                                    <h3 class="box-title">2013-2014 Güz Yarıyılı</h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body no-padding">
-                                    <table class="table table-striped">
-                                        <tr>
-                                            <th style="width:7%">Ders Kodu</th>
-                                            <th style="width:5%">Yıl</th>
-                                            <th>Ders Adı</th>
-                                            <th style="width:5%">Kredi</th>
-                                            <th style="width:5%">Katsayı</th>
-                                            <th style="width:5%">Muaf</th>
-                                            <th style="width:8%">Ara Sınav-1</th>
-                                            <th style="width:8%">Ara Sınav-2</th>
-                                            <th style="width:8%">Genel Sınav</th>
-                                            <th style="width:6%">Bütünleme</th>
-                                            <th style="width:7%">Tek Ders</th>
-                                            <th style="width:5%">Harf</th>
-                                            <th style="width:6%">Durum</th>
-
-                                        </tr>
-										<tr>
-                                            <td>5035101</td>
-                                            <td>2014</td>
-                                            <td>Bilgisayar Programlama</td>
-                                            <td>5</td>
-                                            <td>2</td>
-                                            <td> </td>
-                                            <td><span class="badge bg-green">55</span></td>
-                                            <td> </td>
-                                            <td><span class="badge bg-green">60</span></td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td><span class="badge bg-green">CC</span></td>
-                                            <td><span class="badge bg-green">Geçti</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>5035103</td>
-                                            <td>2014</td>
-                                            <td>Bilgisayar Destekli Çizim</td>
-                                            <td>5</td>
-                                            <td>2</td>
-                                            <td> </td>
-                                            <td><span class="badge bg-red">10</span></td>
-                                            <td> </td>
-                                            <td><span class="badge bg-red">25</span></td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td><span class="badge bg-red">DD</span></td>
-                                            <td><span class="badge bg-red">Kaldı</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="13">2013-2014 Güz Yarıyılı : <b>3,05</b></td>
-                                        </tr>
-                                    </table>
-                                </div><!-- /.box-body -->
+							</tr>
+							<?php
+								$dosya = file_get_contents('data.json');
+								$json = json_decode($dosya,true);
+								foreach ($json as $deger)
+								{
+									echo '<tr>';
+										echo '<td>';
+											echo $deger['Ders Kodu'];
+										echo '</td>';
+										echo '<td>';
+											echo $deger['Yıl'];
+										echo '</td>';
+										echo '<td>';
+											echo $deger['Ders Adı'];
+										echo '</td>';
+										echo '<td>';
+											echo $deger['Kredi'];
+										echo '</td>';
+										echo '<td>';
+											echo $deger['Katsayı'];
+										echo '</td>';
+										echo '<td>';
+											echo $deger['Muaf'];
+										echo '</td>';
+										echo '<td>';
+											if($deger['AraSınav1']=="  ")
+												echo '<span class="badge bg-yellow">x</span>';
+											else if($deger['AraSınav1']>=60)
+												echo '<span class="badge bg-green">'.$deger['AraSınav1'].'</span>';
+											else
+												echo '<span class="badge bg-red">'.$deger['AraSınav1'].'</span>';
+										echo '</td>';
+										echo '<td>';
+											if($deger['AraSınav2']=="  ")
+												echo '<span class="badge bg-yellow">x</span>';
+											else if($deger['AraSınav2']>=60)
+												echo '<span class="badge bg-green">'.$deger['AraSınav2'].'</span>';
+											else
+												echo '<span class="badge bg-red">'.$deger['AraSınav2'].'</span>';
+										echo '</td>';
+										echo '<td>';
+											if($deger['Genel Sınav']=="  ")
+												echo '<span class="badge bg-yellow">x</span>';
+											else if($deger['Genel Sınav']>=60)
+												echo '<span class="badge bg-green">'.$deger['Genel Sınav'].'</span>';
+											else
+												echo '<span class="badge bg-red">'.$deger['Genel Sınav'].'</span>';
+										echo '</td>';
+										echo '<td>';
+											echo $deger['Bütünleme'];
+										echo '</td>';
+										echo '<td>';
+											echo $deger['Tekders'];
+										echo '</td>';
+										echo '<td>';
+											switch ($deger['Harf']) {
+											case "AA":
+												echo '<span class="badge bg-green">'.$deger['Harf'].'</span>';
+												break;
+											case "BA":
+												echo '<span class="badge bg-green">'.$deger['Harf'].'</span>';
+												break;
+											case "BB":
+												echo '<span class="badge bg-green">'.$deger['Harf'].'</span>';
+												break;
+											case "CB":
+												echo '<span class="badge bg-green">'.$deger['Harf'].'</span>';
+												break;
+											case "CC":
+												echo '<span class="badge bg-green">'.$deger['Harf'].'</span>';
+												break;
+											case "DC":
+												echo '<span class="badge bg-red">'.$deger['Harf'].'</span>';
+												break;
+											case "DD":
+												echo '<span class="badge bg-red">'.$deger['Harf'].'</span>';
+												break;
+											case "FF":
+												echo '<span class="badge bg-red">'.$deger['Harf'].'</span>';
+												break;
+											}
+										echo '</td>';
+										echo '<td>';
+											if($deger['Durum']=="1")
+												echo '<span class="badge bg-red">Kaldı</span>';
+											else
+												echo '<span class="badge bg-green">Geçti</span>';
+												
+										echo '</td>';
+									echo '</tr>';
+								}
+							?>
+							<tr>
+								<td colspan="13">2013-2014 Güz Yarıyılı : <b>3,05</b></td>
+							</tr>
+						</table>
+					</div><!-- /.box-body -->
                 </div>
 
 
-                <div class="box">
-                                <div class="box-header">
-                                    <h3 class="box-title">2013-2014 Bahar Yarıyılı</h3>
-                                </div><!-- /.box-header -->
-                                <div class="box-body no-padding">
-                                    <table class="table table-striped">
-                                        <tr>
-                                            <th style="width:7%">Ders Kodu</th>
-                                            <th style="width:5%">Yıl</th>
-                                            <th>Ders Adı</th>
-                                            <th style="width:5%">Kredi</th>
-                                            <th style="width:5%">Katsayı</th>
-                                            <th style="width:5%">Muaf</th>
-                                            <th style="width:8%">Ara Sınav-1</th>
-                                            <th style="width:8%">Ara Sınav-2</th>
-                                            <th style="width:8%">Genel Sınav</th>
-                                            <th style="width:6%">Bütünleme</th>
-                                            <th style="width:7%">Tek Ders</th>
-                                            <th style="width:5%">Harf</th>
-                                            <th style="width:6%">Durum</th>
-
-                                        </tr>
-                                        <tr>
-                                            <td>5035101</td>
-                                            <td>2014</td>
-                                            <td>Bilgisayar Programlama</td>
-                                            <td>5</td>
-                                            <td>2</td>
-                                            <td> </td>
-                                            <td><span class="badge bg-green">55</span></td>
-                                            <td> </td>
-                                            <td><span class="badge bg-green">60</span></td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td><span class="badge bg-green">CC</span></td>
-                                            <td><span class="badge bg-green">Geçti</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>5035103</td>
-                                            <td>2014</td>
-                                            <td>Bilgisayar Destekli Çizim</td>
-                                            <td>5</td>
-                                            <td>2</td>
-                                            <td> </td>
-                                            <td><span class="badge bg-red">10</span></td>
-                                            <td> </td>
-                                            <td><span class="badge bg-red">25</span></td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td><span class="badge bg-red">DD</span></td>
-                                            <td><span class="badge bg-red">Kaldı</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>5035104</td>
-                                            <td>2014</td>
-                                            <td>Veritabanı Programlama</td>
-                                            <td>5</td>
-                                            <td>2</td>
-                                            <td> </td>
-                                            <td><span class="badge bg-green">100</span></td>
-                                            <td> </td>
-                                            <td><span class="badge bg-red">10</span></td>
-                                            <td> </td>
-                                            <td> </td>
-                                            <td><span class="badge bg-red">AD</span></td>
-                                            <td><span class="badge bg-red">Kaldı</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="13">2013-2014 Bahar Yarıyılı : <b>3,05</b></td>
-                                        </tr>
-                                    </table>
-                                </div><!-- /.box-body -->
-                </div>
+                
 
                 
                 <!-- /.content -->
