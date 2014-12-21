@@ -138,8 +138,8 @@ class Service extends phpQuery
 	{
 		if(is_array($this->return))
 		{
-			header('Content-Type: application/json;charset=utf-8');
-			echo json_encode($this->return,JSON_PRETTY_PRINT);
+			//header('Content-Type: application/json;charset=utf-8');
+			//echo json_encode($this->return,JSON_PRETTY_PRINT);
 		}
 		else 
 		{

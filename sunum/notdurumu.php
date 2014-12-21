@@ -96,9 +96,13 @@
 
 							</tr>
 							<?php
-								$dosya = file_get_contents('data.json');
-								$json = json_decode($dosya,true);
-								foreach ($json as $deger)
+								include "../service.php";
+								$saas=new Service();
+								$json = $saas->notlar();
+								foreach($json as $index=>$donemler)
+								{
+									echo "<tr><td>$index</td></tr>";
+								foreach ($donemler as $deger)
 								{
 									echo '<tr>';
 										echo '<td>';
@@ -185,6 +189,7 @@
 												
 										echo '</td>';
 									echo '</tr>';
+								}
 								}
 							?>
 							<tr>
