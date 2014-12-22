@@ -1,3 +1,4 @@
+<?php ob_start(); ?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -188,50 +189,64 @@
 								case 'katalogTara':
 									phpQuery::newDocument($xml);
 									$rows= pq('tr[bgcolor=White]');
-									echo '
-									<div class="row">
-									<div class="col-xs-12">
-										<div class="box">
-											<div class="box-header" style="background-color:#c0d8e5">
-												<h3 class="box-title">Arama Sonuçları</h3>
-											</div><!-- /.box-header -->
-											<div class="box-body table-responsive no-padding">
-												<table class="table table-hover">
+									$gId=isset($_REQUEST["gId"])?"gId=".$_REQUEST["gId"]."&":"";
+									if(pq($rows)->length()==1)
+									{
+										$parsedUrl=parse_url(pq($rows)->find("a")->attr("href"));
+										parse_str($parsedUrl["query"],$parsedUrl);
+										header("location:?".$gId."kIsim=".$parsedUrl["MARCID"]."&islem=katalogDetay");
+									}
+									elseif(pq($rows)->length()==0 && isset($_REQUEST["gId"]))
+									{ 
+										header("location:?islem=katalogDetay&kIsim=".$_REQUEST["gId"]."");
+									}
+									else
+									{
+										echo '
+										<div class="row">
+										<div class="col-xs-12">
+											<div class="box">
+												<div class="box-header" style="background-color:#c0d8e5">
+													<h3 class="box-title">Arama Sonuçları</h3>
+												</div><!-- /.box-header -->
+												<div class="box-body table-responsive no-padding">
+													<table class="table table-hover">
+														<tr>
+															<th style="width:50px">No</th>
+															<th>Kitap Bilgisi</th>
+														</tr>
+										';
+											$donguSayisi=0;
+											foreach($rows as $row)
+											{
+												$donguSayisi=$donguSayisi+1;
+												$parsedUrl=parse_url(pq($row)->find("a")->attr("href"));
+												parse_str($parsedUrl["query"],$parsedUrl);
+												echo"
 													<tr>
-														<th style="width:50px">No</th>
-														<th>Kitap Bilgisi</th>
+														<td>
+															
+															$donguSayisi.
+															
+														</td>
+														<td>
+															<a href='?kIsim=".$parsedUrl["MARCID"]."&islem=katalogDetay'>
+																".pq($row)->find("a")->text()."
+															</a>
+														</td>
 													</tr>
-									';
-										$donguSayisi=0;
-										foreach($rows as $row)
-										{
-											$donguSayisi=$donguSayisi+1;
-											$parsedUrl=parse_url(pq($row)->find("a")->attr("href"));
-											parse_str($parsedUrl["query"],$parsedUrl);
-											echo"
-												<tr>
-													<td>
-														
-														$donguSayisi.
-														
-													</td>
-													<td>
-														<a href='?kIsim=".$parsedUrl["MARCID"]."&islem=katalogDetay'>
-															".pq($row)->find("a")->text()."
-														</a>
-													</td>
-												</tr>
-											";
-											//echo pq($row)->find("a")->text()."<br>";
-											//echo pq($row)->children("td")->filter(":eq(1)")->text()."<br>";
-										}
-									echo '
-													</table>
-												</div><!-- /.box-body -->
-											</div><!-- /.box -->
+												";
+												//echo pq($row)->find("a")->text()."<br>";
+												//echo pq($row)->children("td")->filter(":eq(1)")->text()."<br>";
+											}
+										echo '
+														</table>
+													</div><!-- /.box-body -->
+												</div><!-- /.box -->
+											</div>
 										</div>
-									</div>
-									';
+										';
+									}
 								break;
 								case 'katalogDetay':
 									$katalogDetay=cUrll("katalogDetay",false,$_REQUEST["kIsim"]);
@@ -247,27 +262,61 @@
 										"konu"=>"Konu",
 										"odunc"=>"Ödünç Verilebilir"
 										);
+										$kitapDurumlari=array(
+										"yerNo",
+										"bulunduguYer",
+										"yil",
+										"cilt",
+										"kopya",
+										"iadeTarihi"
+										);
 									foreach($istenenler as $idx=>$istenen)
 									{
 										$selcukDetay[$idx]=pq('td:contains('.$istenen.') + td')->text();
 									}
-									echo pq('td:contains("Ödünç") + td')->text()."--";
-									//$isbn= pq('td:contains(ISBN) + td')->text();
-									$goodReadsDetay=cUrll("bookName",true,$selcukDetay["isbn"]);
+									$kitapAdetler=pq("#Table3 tr:not(:first)");
+									$kitapOzellikler=[];
+									foreach($kitapAdetler as $idx=>$kitapAdet)
+									{
+										foreach(pq($kitapAdet)->find("td") as $idx2=>$td)
+										{
+											$kitapOzellikler[$idx][$kitapDurumlari[$idx2]]=pq($td)->text();
+										}
+									}
+										if(isset($_REQUEST["gId"]))
+										{
+											$goodReadsDetay=cUrll("bookName",true,$_REQUEST["gId"]);
+										}
+										else
+										{
+											if(empty($selcukDetay["isbn"]))
+											{
+												$goodReadsDetay=cUrll("bookName",true,$_REQUEST["kIsim"]);
+											}
+											else
+											{
+												$goodReadsDetay=cUrll("bookName",true,$selcukDetay["isbn"]);
+											}
+										}
 									$goodReadsDetay=new SimpleXMLElement($goodReadsDetay);
 									echo '
 									<div class="row">
 									<div class="col-xs-12">
 										<div class="box">
 											<div class="box-header" style="background-color:#c0d8e5">
-												<h3 class="box-title">'.$goodReadsDetay->book->title .' İsimli Kitap Bilgileri</h3>
+												<h3 class="box-title">'.$goodReadsDetay->book->title .' İsimli Kitap Bilgileri </h3>
+												
+												<button class="btn btn-success btn-sm pull-right" style="margin-right:15px; margin-top:5px;">
+													<i class="fa fa-plus"></i>&nbsp; Kitaplığa Ekle
+												</button>
+												
 											</div><!-- /.box-header -->
 											<div class="box-body table-responsive no-padding">
 												<table class="table table-condensed">
 									';
 										echo "
 											<tr>
-												<td rowspan=6 width=200 align=center><img width=150 src='".$goodReadsDetay->book->image_url."' /></td>
+												<td rowspan=5 width=200 align=center><img width=150 src='".$goodReadsDetay->book->image_url."' /></td>
 												<td width=100px >Kitap İsmi : </td>
 												<td>".$goodReadsDetay->book->title ."</td>
 											</tr>
@@ -288,24 +337,99 @@
 												<td>".$goodReadsDetay->book->average_rating ."</td>
 											</tr>
 											<tr>
-												<td>Ödünç:</td>
-												<td>".$selcukDetay["odunc"] ."</td>
-											</tr>
-											<tr>
 												<td>Kitap Açıklaması:</td>
 												<td colspan=2>".$goodReadsDetay->book->description ."</td>
 											</tr>
 										";
-									echo "</table>";
+									echo "</table> </div></div></div></div>";
+									echo '
+									<div class="row">
+									<div class="col-xs-12">
+										<div class="box">
+											<div class="box-header" style="background-color:#A8FFA8">
+												<h3 class="box-title">Ödünç Verilme Bilgisi</h3>
+											</div><!-- /.box-header -->
+											<div class="box-body table-responsive no-padding">
+												<table class="table table-condensed">
+												<tr>
+													<th>Yer Numarası</th>
+													<th>Bulunduğu Yer</th>
+													<th>Yıl</th>
+													<th>Cilt</th>
+													<th>Kopya</th>
+													<th>İade Tarihi</th>
+												</tr>
+												';
+										foreach($kitapOzellikler as $idx=>$kitapOzellik)
+										{
+											echo "<tr>
+													<td>".$kitapOzellik["yerNo"]."</td>
+													<td>".$kitapOzellik["bulunduguYer"]."</td>
+													<td>".$kitapOzellik["yil"]."</td>
+													<td>".$kitapOzellik["cilt"]."</td>
+													<td>".$kitapOzellik["kopya"]."</td>
+													";
+													if($kitapOzellik["iadeTarihi"]=="Ödünç Verilebilir")
+														echo '<td><span class="badge bg-green">'.$kitapOzellik["iadeTarihi"].'</span></td>';
+													else
+														echo '<td><span class="badge bg-yellow">'.$kitapOzellik["iadeTarihi"].'</span></td>';
+													echo "
+												</tr>
+												";
+										}
+									echo '</table></div></div></div></div>';
+									//Benzer kitaplar çekiliyor
+									echo '
+									<div class="row">
+									<div class="col-xs-12">
+										<div class="box">
+											<div class="box-header" style="background-color:#A8FFA8">
+												<h3 class="box-title">Benzer Kitaplar</h3>
+											</div><!-- /.box-header -->
+											';
+												
+												
+												$goodreadsIsbn;
+												foreach($goodReadsDetay->book->similar_books->book as $bookss)
+												{
+													if(!empty($bookss->isbn))
+													{
+														$goodreadsIsbn=$bookss->isbn;
+													}
+													elseif(!empty($bookss->isbn13))
+													{
+														$goodreadsIsbn=$bookss->isbn13;
+													}
+													else
+													{
+														$goodreadsIsbn=$bookss->title;
+													}
+													echo "
+													
+														<div class='col-md-4'><div class='content'>
+															<a href='?gId=".$bookss->id."&kIsim=".$goodreadsIsbn."&islem=katalogTara' >
+																<img src='".$bookss->small_image_url."' />
+															</a>
+														
+														<span>".$bookss->title."</span>
+														</div>
+														</div>
+														
+														
+														";
+												}
+											
+												
+							
+									
+									
 								break;
+									
 							}
 						}
 					?>
 
-                                </div><!-- /.box-body -->
-                            </div><!-- /.box -->
-                        </div>
-                    </div>
+                               
 				</section>
 				
 							
@@ -355,3 +479,4 @@
 
     </body>
 </html>
+<?php ob_end_flush(); ?>

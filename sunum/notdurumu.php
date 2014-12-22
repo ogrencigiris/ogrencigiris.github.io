@@ -59,23 +59,18 @@
 
                 <!-- Main content -->
                 
-                <div class="box" >
-				<!--
-                    <div ng-app="notdurumu">
-                      <div ng-controller="notlistesi">
-                        
-                        <form ng-submit="getGithubRepos()">
-                          Github Kullanıcı adı: <input type="text" />
-                        </form>
-                        
-                       
-                          {{ ogrno }}
-                        
-                    </div>
-					</div>
-					-->
+                
+							<?php
+								include "../service.php";
+								$saas=new Service();
+								$json = $saas->notlar();
+								foreach($json as $index=>$donemler)
+								{
+									echo '
+									
+									<div class="box" >
 					<div class="box-header">
-						<h3 class="box-title">2013-2014 Güz Yarıyılı</h3>
+						<h3 class="box-title">'.$index.'</h3>
 					</div><!-- /.box-header -->
 					<div class="box-body no-padding">
 						<table class="table table-striped">
@@ -95,13 +90,8 @@
 								<th style="width:6%">Durum</th>
 
 							</tr>
-							<?php
-								include "../service.php";
-								$saas=new Service();
-								$json = $saas->notlar();
-								foreach($json as $index=>$donemler)
-								{
-									echo "<tr><td>$index</td></tr>";
+									
+									';
 								foreach ($donemler as $deger)
 								{
 									echo '<tr>';
@@ -190,14 +180,12 @@
 										echo '</td>';
 									echo '</tr>';
 								}
+								echo '</table>
+					</div>
+                </div>';
 								}
 							?>
-							<tr>
-								<td colspan="13">2013-2014 Güz Yarıyılı : <b>3,05</b></td>
-							</tr>
-						</table>
-					</div><!-- /.box-body -->
-                </div>
+						
 
 
                 
