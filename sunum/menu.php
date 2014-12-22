@@ -20,6 +20,7 @@
         <li><a href="#"><i class="fa fa-angle-double-right"></i> Transkript</a></li>
       </ul>
     </li>
+	<li> <a href="kutuphane.php"> <i class="fa fa-book"></i> <span>Kütüphane</span> </a> </li>
     <li> <a href="#"> <i class="fa fa-money"></i> <span>Harç Durumu</span> </a> </li>
     <li> <a href="sinavtarihleri.php"> <i class="fa fa-calendar"></i> <span>Sınav Tarihleri</span> </a> </li>
     <li> <a href="#"> <i class="fa fa-info"></i> <span>Bölüm Bilgileri</span> </a> </li>
