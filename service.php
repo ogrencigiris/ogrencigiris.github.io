@@ -7,7 +7,7 @@
 include "phpQuery-onefile.php";
 class Service extends phpQuery
 {
-	public $base_domain="https://asp2.selcuk.edu.tr/asp/ogr/";
+	public $base_domain="https://asp2.selcuk.edu.tr/asp/ogrstd/";
 	public $opt_header=true;
 	public $login=false;
 	public $return=array();
