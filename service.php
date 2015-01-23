@@ -17,6 +17,7 @@ class Service extends phpQuery
 	
 	public function __construct()
 	{
+		echo $this->base_domain;
 		/*if(isset($_SESSION["ogrno"]) && isset($_SESSION["pass"]))
 		{
 			$this->ogrno=$_SESSION["ogrno"];
