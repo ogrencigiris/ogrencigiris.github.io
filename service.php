@@ -5,7 +5,6 @@
 * Templating angular ile halledilecek..belki...
 */
 include "phpQuery-onefile.php";
-echo "asldkmaklsdmf";
 class Service extends phpQuery
 {
 	public $base_domain="https://asp2.selcuk.edu.tr/asp/ogr/";
