@@ -24,7 +24,7 @@ class Service extends phpQuery
 			$this->pass=$_SESSION["pass"];
 		}*/
 		//echo pq("table:eq(1)");
-		$content=$this::cURL();
+		$content=$this::cURL("CAPTCHA/CAPTCHA_image.asp");
 		preg_match('/^Set-Cookie:\s*([^;]*)/mi', $content, $m);
 		if(isset($m[1]))
 		{
