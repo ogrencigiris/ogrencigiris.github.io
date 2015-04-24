@@ -136,7 +136,7 @@ class Service extends phpQuery
 		):$post_fields;
 		$ch = curl_init($this->base_domain.$url);
 		curl_setopt_array( $ch,array(			
-			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_RETURNTRANSFER => false,
 			CURLOPT_HEADER => true,
 			CURLOPT_AUTOREFERER => true,
 			CURLOPT_CONNECTTIMEOUT => 30,
