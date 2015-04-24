@@ -152,6 +152,7 @@ class Service extends phpQuery
 		));
 		$content = curl_exec( $ch );
 		curl_close( $ch );
+		echo "Giriş Tamamdır.";
 		return $content;		
 	}
 	public function __destruct()
