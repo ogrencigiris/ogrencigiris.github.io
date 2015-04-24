@@ -30,6 +30,8 @@ class Service extends phpQuery
 		{
 			parse_str($m[1], $this->cookies);
 		}
+		$content= phpQuery::newDocument($content);
+		pq("script")->remove();
 		$this->return = $content;
 	}
 	public function profile($url="sag.asp")
@@ -153,7 +155,6 @@ class Service extends phpQuery
 		));
 		$content = curl_exec( $ch );
 		curl_close( $ch );
-		echo "Giriş Tamamdır.";
 		return $content;		
 	}
 	public function __destruct()
