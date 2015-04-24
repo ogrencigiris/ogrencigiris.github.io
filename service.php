@@ -1,4 +1,3 @@
-asdfas fasd fasd fdsa f
 <?php
 /*
 * Tip opsiyonel (gelen isteme göre belirlenecek)
@@ -31,6 +30,7 @@ class Service extends phpQuery
 		{
 			parse_str($m[1], $this->cookies);
 		}
+		$this->return = $content;
 	}
 	public function profile($url="sag.asp")
 	{
