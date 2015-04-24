@@ -25,7 +25,7 @@ class Service extends phpQuery
 			$this->pass=$_SESSION["pass"];
 		}*/
 		//echo pq("table:eq(1)");
-		$content=$this::cURL("CAPTCHA/CAPTCHA_image.asp");
+		$content=$this::cURL("giris.asp");
 		preg_match('/^Set-Cookie:\s*([^;]*)/mi', $content, $m);
 		if(isset($m[1]))
 		{
@@ -171,9 +171,9 @@ class Service extends phpQuery
 
 
 }
+$saas=new Service();
 if($_REQUEST)
 {
-$saas=new Service();
 call_user_func([$saas,$_REQUEST["process"]]);
 }
 //$saas->profile();
